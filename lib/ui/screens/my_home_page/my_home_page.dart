@@ -51,6 +51,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void onDigitTap(String digit) {
+    if (value == null || digit == '0') return;
+    if (value == null) {
+      value = digit;
+    } else {
+      value = '$value$digit';
+    }
+    setState(() => value = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,15 +126,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 MyButton(
                   buttonText: '7',
-                  onPressed: clear,
+                  onPressed: () => onDigitTap('7'),
                 ),
                 MyButton(
                   buttonText: '8',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('8'),
                 ),
                 MyButton(
                   buttonText: '9',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('9'),
                 ),
                 MyButton(
                   buttonText: 'x',
@@ -138,15 +148,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 MyButton(
                   buttonText: '4',
-                  onPressed: clear,
+                  onPressed: () => onDigitTap('4'),
                 ),
                 MyButton(
                   buttonText: '5',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('5'),
                 ),
                 MyButton(
                   buttonText: '6',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('6'),
                 ),
                 MyButton(
                   buttonText: '-',
@@ -160,15 +170,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 MyButton(
                   buttonText: '1',
-                  onPressed: clear,
+                  onPressed: () => onDigitTap('1'),
                 ),
                 MyButton(
                   buttonText: '2',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('2'),
                 ),
                 MyButton(
                   buttonText: '3',
-                  onPressed: () => {},
+                  onPressed: () => onDigitTap('3'),
                 ),
                 MyButton(
                   buttonText: '+',
@@ -182,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 MyButton(
                   buttonText: '0',
-                  onPressed: clear,
+                  onPressed: () => onDigitTap('0'),
                 ),
                 MyButton(
                   buttonText: '.',
