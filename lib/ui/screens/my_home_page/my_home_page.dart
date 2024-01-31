@@ -34,7 +34,8 @@ class _MyHomePageState extends State<MyHomePage> {
       } else if (_expression.contains('+') ||
           _expression.contains('-') ||
           _expression.contains('×') ||
-          _expression.contains('/')) {
+          _expression.contains('/') ||
+          _expression.contains('%')) {
         // Check if the expression contains any operator
         String lastOperand =
             _expression.split(RegExp(r'[+\-×/]')).last; // Get the last operand
@@ -49,14 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (buttonText == '+' ||
         buttonText == '-' ||
         buttonText == '×' ||
-        buttonText == '/') {
+        buttonText == '/' ||
+        buttonText == '%') {
       // Check if the button is an operator
       if (_expression.isEmpty) {
         // Do nothing if the expression is empty
       } else if (_expression.endsWith('+') ||
           _expression.endsWith('-') ||
           _expression.endsWith('×') ||
-          _expression.endsWith('/')) {
+          _expression.endsWith('/') ||
+          _expression.endsWith('%')) {
         // Replace the last operator with the new one if the expression already ends with an operator
         _expression =
             _expression.substring(0, _expression.length - 1) + buttonText;
@@ -71,7 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
       } else if (_expression.endsWith('+') ||
           _expression.endsWith('-') ||
           _expression.endsWith('×') ||
-          _expression.endsWith('/')) {
+          _expression.endsWith('/') ||
+          _expression.endsWith('%')) {
         // Do nothing if the expression ends with an operator
       } else {
         // Append '00' if the expression does not end with an operator
@@ -137,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '%',
-                    onPressed: () => {},
+                    onPressed: () => onTap('%'),
                   ),
                   MyButton(
                     buttonText: '/',
