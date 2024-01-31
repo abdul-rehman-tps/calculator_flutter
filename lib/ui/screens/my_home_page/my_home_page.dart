@@ -1,6 +1,7 @@
 import 'package:calculator_flutter/ui/widgets/my_button.dart';
 import 'package:calculator_flutter/util/util.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -12,77 +13,74 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double _result = 0;
 
-  String? value;
+  String _expression = '';
 
-  String? operation;
-
-  void applyOperation() {
-    if (value != null && operation == null) {
-      _result += double.tryParse(value!) ?? 0;
-      setState(() {
-        value = null;
-        _result = _result;
-      });
-    }
-    if (operation == null || value == null) return;
-    double value2 = double.tryParse(value!) ?? 0;
-    switch (operation) {
-      case '+':
-        _result += value2;
-        break;
-      case '-':
-        _result -= value2;
-        break;
-      case 'x':
-        _result *= value2;
-        break;
-      case '/':
-        _result /= value2;
-        break;
-      case '%':
-        _result = _result / 100;
-        break;
-    }
-
-    setState(() {
-      value = null;
-      operation = null;
-      _result = _result;
-    });
-  }
-
-  void clear() {
-    setState(() {
-      value = null;
-      operation = null;
-      _result = 0;
-    });
-  }
-
-  void onDigitTap(String digit) {
-    if (value == null && (digit == '0' || digit == '00')) return;
-    if (value == null) {
-      value = digit;
+  void onTap(String buttonText) {
+    if (buttonText == 'AC') {
+      _expression = '';
+    } else if (buttonText == '=') {
+      try {
+        Parser p = Parser();
+        Expression exp = p.parse(_expression);
+        ContextModel cm = ContextModel();
+        _result = exp.evaluate(EvaluationType.REAL, cm);
+        _expression = '';
+      } catch (e) {
+        _expression = 'Error';
+      }
+    } else if (buttonText == '.') {
+      if (_expression.isEmpty || _expression.endsWith('.')) {
+        // Do nothing if the expression is empty or already ends with a decimal point
+      } else if (_expression.contains('+') ||
+          _expression.contains('-') ||
+          _expression.contains('×') ||
+          _expression.contains('/')) {
+        // Check if the expression contains any operator
+        String lastOperand =
+            _expression.split(RegExp(r'[+\-×/]')).last; // Get the last operand
+        if (!lastOperand.contains('.')) {
+          // Append the decimal point only if the last operand does not have one
+          _expression += buttonText;
+        }
+      } else {
+        // Append the decimal point if the expression does not contain any operator
+        _expression += buttonText;
+      }
+    } else if (buttonText == '+' ||
+        buttonText == '-' ||
+        buttonText == '×' ||
+        buttonText == '/') {
+      // Check if the button is an operator
+      if (_expression.isEmpty) {
+        // Do nothing if the expression is empty
+      } else if (_expression.endsWith('+') ||
+          _expression.endsWith('-') ||
+          _expression.endsWith('×') ||
+          _expression.endsWith('/')) {
+        // Replace the last operator with the new one if the expression already ends with an operator
+        _expression =
+            _expression.substring(0, _expression.length - 1) + buttonText;
+      } else {
+        // Append the operator if the expression does not end with an operator
+        _expression += buttonText;
+      }
+    } else if (buttonText == '00') {
+      // Check if the button is '00'
+      if (_expression.isEmpty) {
+        // Do nothing if the expression is empty
+      } else if (_expression.endsWith('+') ||
+          _expression.endsWith('-') ||
+          _expression.endsWith('×') ||
+          _expression.endsWith('/')) {
+        // Do nothing if the expression ends with an operator
+      } else {
+        // Append '00' if the expression does not end with an operator
+        _expression += buttonText;
+      }
     } else {
-      value = '$value$digit';
+      _expression += buttonText;
     }
-    setState(() => value = value);
-  }
-
-  void onDecimalTap() {
-    if (value == null) {
-      setState(() => value = '0.');
-      return;
-    }
-    if (value!.contains('.')) return;
-    setState(() => value = '$value.');
-  }
-
-  void onOperationTap(String operation) {
-    setState(() {
-      applyOperation();
-      this.operation = operation;
-    });
+    setState(() {});
   }
 
   @override
@@ -111,12 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          operation ?? '',
-                          style: Theme.of(context).textTheme.displayMedium,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          value ?? '',
+                          _expression,
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                       ],
@@ -130,15 +123,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: 'AC',
-                    onPressed: clear,
+                    onPressed: () => onTap('AC'),
                   ),
                   MyButton(
                     buttonText: '+/-',
                     onPressed: () {
-                      if (operation == '+') {
-                        onOperationTap('-');
+                      if (_expression.endsWith('+')) {
+                        onTap('-');
                       } else {
-                        onOperationTap('+');
+                        onTap('+');
                       }
                     },
                   ),
@@ -148,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '/',
-                    onPressed: () => onOperationTap('/'),
+                    onPressed: () => onTap('/'),
                   ),
                 ],
               ),
@@ -158,19 +151,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: '7',
-                    onPressed: () => onDigitTap('7'),
+                    onPressed: () => onTap('7'),
                   ),
                   MyButton(
                     buttonText: '8',
-                    onPressed: () => onDigitTap('8'),
+                    onPressed: () => onTap('8'),
                   ),
                   MyButton(
                     buttonText: '9',
-                    onPressed: () => onDigitTap('9'),
+                    onPressed: () => onTap('9'),
                   ),
                   MyButton(
                     buttonText: 'x',
-                    onPressed: () => onOperationTap('x'),
+                    onPressed: () => onTap('x'),
                   ),
                 ],
               ),
@@ -180,19 +173,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: '4',
-                    onPressed: () => onDigitTap('4'),
+                    onPressed: () => onTap('4'),
                   ),
                   MyButton(
                     buttonText: '5',
-                    onPressed: () => onDigitTap('5'),
+                    onPressed: () => onTap('5'),
                   ),
                   MyButton(
                     buttonText: '6',
-                    onPressed: () => onDigitTap('6'),
+                    onPressed: () => onTap('6'),
                   ),
                   MyButton(
                     buttonText: '-',
-                    onPressed: () => onOperationTap('-'),
+                    onPressed: () => onTap('-'),
                   ),
                 ],
               ),
@@ -202,19 +195,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: '1',
-                    onPressed: () => onDigitTap('1'),
+                    onPressed: () => onTap('1'),
                   ),
                   MyButton(
                     buttonText: '2',
-                    onPressed: () => onDigitTap('2'),
+                    onPressed: () => onTap('2'),
                   ),
                   MyButton(
                     buttonText: '3',
-                    onPressed: () => onDigitTap('3'),
+                    onPressed: () => onTap('3'),
                   ),
                   MyButton(
                     buttonText: '+',
-                    onPressed: () => onOperationTap('+'),
+                    onPressed: () => onTap('+'),
                   ),
                 ],
               ),
@@ -224,19 +217,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: '0',
-                    onPressed: () => onDigitTap('0'),
+                    onPressed: () => onTap('0'),
                   ),
                   MyButton(
                     buttonText: '00',
-                    onPressed: () => onDigitTap('00'),
+                    onPressed: () => onTap('00'),
                   ),
                   MyButton(
                     buttonText: '.',
-                    onPressed: onDecimalTap,
+                    onPressed: () => onTap('.'),
                   ),
                   MyButton(
                     buttonText: '=',
-                    onPressed: applyOperation,
+                    onPressed: () => onTap('='),
                   ),
                 ],
               ),
