@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _result *= value2;
         break;
       case '/':
-        _result -= value2;
+        _result /= value2;
         break;
       case '%':
         _result = _result / 100;
