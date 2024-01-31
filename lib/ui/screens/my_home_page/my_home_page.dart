@@ -69,6 +69,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() => value = value);
   }
 
+  void onDecimalTap() {
+    if (value == null) {
+      setState(() => value = '0.');
+      return;
+    }
+    if (value!.contains('.')) return;
+    setState(() => value = '$value.');
+  }
+
   void onOperationTap(String operation) {
     setState(() {
       applyOperation();
@@ -223,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '.',
-                    onPressed: () => {},
+                    onPressed: onDecimalTap,
                   ),
                   MyButton(
                     buttonText: '=',
