@@ -28,7 +28,7 @@ class MyButton extends StatelessWidget {
         ),
         child: Text(
           buttonText,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 32),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 28),
         ),
       ),
     );

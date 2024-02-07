@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void onTap(String buttonText) {
     if (buttonText == 'AC') {
       _expression = '';
+      _result = 0;
     } else if (buttonText == '=') {
       try {
         Parser p = Parser();
@@ -38,14 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
           _expression.contains('%')) {
         // Check if the expression contains any operator
         String lastOperand =
-            _expression.split(RegExp(r'[+\-×/]')).last; // Get the last operand
+            _expression.split(RegExp(r'[+\-×/%]')).last; // Get the last operand
         if (!lastOperand.contains('.')) {
           // Append the decimal point only if the last operand does not have one
           _expression += buttonText;
         }
       } else {
         // Append the decimal point if the expression does not contain any operator
-        _expression += buttonText;
+        if (!_expression.contains('.')) _expression += buttonText;
       }
     } else if (buttonText == '+' ||
         buttonText == '-' ||
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Append the operator if the expression does not end with an operator
         _expression += buttonText;
       }
-    } else if (buttonText == '00') {
+    } else if (buttonText == '00' || buttonText == '0') {
       // Check if the button is '00'
       if (_expression.isEmpty) {
         // Do nothing if the expression is empty
@@ -166,8 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () => onTap('9'),
                   ),
                   MyButton(
-                    buttonText: 'x',
-                    onPressed: () => onTap('x'),
+                    buttonText: '×',
+                    onPressed: () => onTap('×'),
                   ),
                 ],
               ),
