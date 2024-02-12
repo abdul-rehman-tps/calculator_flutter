@@ -4,12 +4,14 @@ class MyButton extends StatelessWidget {
   final double? circleSize;
   final VoidCallback onPressed;
   final String buttonText;
+  final Color? textColor;
 
   const MyButton({
     super.key,
     this.circleSize,
     required this.onPressed,
     required this.buttonText,
+    this.textColor,
   });
 
   @override
@@ -28,7 +30,10 @@ class MyButton extends StatelessWidget {
         ),
         child: Text(
           buttonText,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 28),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontSize: 28,
+                color: textColor,
+              ),
         ),
       ),
     );

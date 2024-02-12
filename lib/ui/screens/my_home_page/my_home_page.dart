@@ -1,5 +1,6 @@
 import 'package:calculator_flutter/ui/widgets/my_button.dart';
 import 'package:calculator_flutter/util/util.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
@@ -11,22 +12,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _result = 0;
-
   String _expression = '';
+  bool evaluated = false;
 
   void onTap(String buttonText) {
     if (buttonText == 'AC') {
       _expression = '';
-      _result = 0;
     } else if (buttonText == '=') {
       try {
         Parser p = Parser();
-        Expression exp = p.parse(_expression);
+        String parsableExpression = toParsableExpression(_expression);
+        Expression exp = p.parse(parsableExpression);
         ContextModel cm = ContextModel();
-        _result = exp.evaluate(EvaluationType.REAL, cm);
-        _expression = '';
+        _expression =
+            removeDecimalZeroFormat(exp.evaluate(EvaluationType.REAL, cm));
+        evaluated = true;
       } catch (e) {
+        if (kDebugMode) print('Error: $e');
         _expression = 'Error';
       }
     } else if (buttonText == '.') {
@@ -67,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         // Append the operator if the expression does not end with an operator
         _expression += buttonText;
+        evaluated = false;
       }
     } else if (buttonText == '00' || buttonText == '0') {
       // Check if the button is '00'
@@ -79,13 +82,22 @@ class _MyHomePageState extends State<MyHomePage> {
           _expression.endsWith('%')) {
         // Do nothing if the expression ends with an operator
       } else {
-        // Append '00' if the expression does not end with an operator
+        // Append Zeros if the expression does not end with an operator
         _expression += buttonText;
       }
     } else {
-      _expression += buttonText;
+      if (evaluated) {
+        _expression = buttonText;
+        evaluated = false;
+      } else {
+        _expression += buttonText;
+      }
     }
     setState(() {});
+  }
+
+  String toParsableExpression(String displayedExpression) {
+    return displayedExpression.replaceAll('×', '*');
   }
 
   @override
@@ -96,30 +108,17 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          removeDecimalZeroFormat(_result),
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          _expression,
-                          style: Theme.of(context).textTheme.displayMedium,
-                        ),
-                      ],
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
+                  child: Text(
+                    _expression,
+                    textAlign: TextAlign.end,
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -128,10 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   MyButton(
                     buttonText: 'AC',
+                    textColor: Colors.grey,
                     onPressed: () => onTap('AC'),
                   ),
                   MyButton(
                     buttonText: '+/-',
+                    textColor: Colors.grey,
                     onPressed: () {
                       if (_expression.endsWith('+')) {
                         onTap('-');
@@ -142,10 +143,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '%',
+                    textColor: Colors.grey,
                     onPressed: () => onTap('%'),
                   ),
                   MyButton(
                     buttonText: '/',
+                    textColor: Colors.orange,
                     onPressed: () => onTap('/'),
                   ),
                 ],
@@ -168,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '×',
+                    textColor: Colors.orange,
                     onPressed: () => onTap('×'),
                   ),
                 ],
@@ -190,6 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '-',
+                    textColor: Colors.orange,
                     onPressed: () => onTap('-'),
                   ),
                 ],
@@ -212,6 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '+',
+                    textColor: Colors.orange,
                     onPressed: () => onTap('+'),
                   ),
                 ],
@@ -234,6 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   MyButton(
                     buttonText: '=',
+                    textColor: Colors.orange,
                     onPressed: () => onTap('='),
                   ),
                 ],
