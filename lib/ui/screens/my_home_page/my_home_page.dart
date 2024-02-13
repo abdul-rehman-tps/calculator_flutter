@@ -71,17 +71,19 @@ class _MyHomePageState extends State<MyHomePage> {
         _expression += buttonText;
         evaluated = false;
       }
-    } else if (buttonText == '00' || buttonText == '0') {
-      // Check if the button is '00'
+    } else if (buttonText == '0') {
+      // Check if the button is '0'
       if (_expression.isEmpty) {
         // Do nothing if the expression is empty
-      } else if (_expression.endsWith('+') ||
-          _expression.endsWith('-') ||
-          _expression.endsWith('×') ||
-          _expression.endsWith('/') ||
-          _expression.endsWith('%')) {
-        // Do nothing if the expression ends with an operator
-      } else {
+      }
+      // else if (_expression.endsWith('+') ||
+      //     _expression.endsWith('-') ||
+      //     _expression.endsWith('×') ||
+      //     _expression.endsWith('/') ||
+      //     _expression.endsWith('%')) {
+      //   // Do nothing if the expression ends with an operator
+      // }
+      else {
         // Append Zeros if the expression does not end with an operator
         _expression += buttonText;
       }
@@ -233,14 +235,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(16.0),
                       ),
-                      child: Expanded(
-                        child: Text(
-                          '0',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontSize: 28,
-                                  ),
-                        ),
+                      child: Text(
+                        '0',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontSize: 28,
+                            ),
                       ),
                     ),
                   ),
