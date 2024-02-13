@@ -226,13 +226,23 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  MyButton(
-                    buttonText: '0',
-                    onPressed: () => onTap('0'),
-                  ),
-                  MyButton(
-                    buttonText: '00',
-                    onPressed: () => onTap('00'),
+                  SizedBox(
+                    width: ((MediaQuery.of(context).size.width - 16) / 2) - 16,
+                    child: ElevatedButton(
+                      onPressed: () => onTap('0'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
+                      ),
+                      child: Expanded(
+                        child: Text(
+                          '0',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontSize: 28,
+                                  ),
+                        ),
+                      ),
+                    ),
                   ),
                   MyButton(
                     buttonText: '.',

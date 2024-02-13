@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
-  final double? circleSize;
   final VoidCallback onPressed;
   final String buttonText;
   final Color? textColor;
 
   const MyButton({
     super.key,
-    this.circleSize,
     required this.onPressed,
     required this.buttonText,
     this.textColor,
@@ -17,7 +15,7 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double width = circleSize ?? ((screenWidth - 16) / 4) - 16;
+    double width = ((screenWidth - 16) / 4) - 16;
 
     return SizedBox(
       width: width,
